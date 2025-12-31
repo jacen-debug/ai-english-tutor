@@ -6,120 +6,198 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 赋能 英语学习新体验</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(203, 213, 225, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.8);
         }
     </style>
 </head>
 
-<body class="bg-gradient-to-b from-blue-50 to-white min-h-screen text-gray-800">
+<body
+    class="bg-gradient-to-b from-blue-50/60 via-white to-white min-h-screen text-[#111111] overflow-x-hidden selection:bg-blue-100 selection:text-blue-900">
 
     <!-- Hero Section -->
-    <header class="pt-20 pb-16 px-4 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold text-blue-900 mb-4 tracking-tight">
+    <header class="pt-32 pb-24 px-4 text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight text-[#111111]">
             AI 赋能 英语学习新体验
         </h1>
-        <p class="text-gray-500 text-lg md:text-xl font-light mb-10 max-w-2xl mx-auto">
+        <p class="text-slate-500 text-lg md:text-xl font-normal mb-14 max-w-2xl mx-auto tracking-wide">
             你的 24 小时 AI 口语教练。
         </p>
 
-        <!-- Search Bar -->
-        <div
-            class="relative max-w-xl mx-auto shadow-sm hover:shadow-md transition-shadow duration-300 rounded-full group">
-            <input type="text" placeholder="搜索课程或功能..."
-                class="w-full py-4 pl-6 pr-16 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-100 text-gray-600 placeholder-gray-400 bg-white">
-            <button
-                class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full transition-colors duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-            </button>
+        <!-- Floating Capsule Search Bar -->
+        <div class="relative max-w-2xl mx-auto group z-10">
+            <!-- Glow Effect -->
+            <div
+                class="absolute inset-0 bg-blue-200/40 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none transform scale-95">
+            </div>
+
+            <div
+                class="relative bg-white rounded-full shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] p-2 pl-3 flex items-center transition-all duration-300 group-hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.12)]">
+                <div class="pl-5 text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input type="text" placeholder="搜索课程或功能..."
+                    class="w-full py-4 px-4 rounded-full focus:outline-none text-lg text-[#111111] placeholder-slate-400 bg-transparent font-medium">
+                <button
+                    class="bg-blue-600 hover:bg-blue-500 text-white w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg shadow-blue-600/20 hover:scale-105 active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </button>
+            </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 pb-20 max-w-5xl">
-        <div class="mb-8 text-center md:text-left">
-            <h2 class="text-2xl font-bold text-gray-800">热门学习工具</h2>
+    <main class="container mx-auto px-6 pb-40 max-w-6xl">
+        <div class="mb-14 px-2">
+            <h2 class="text-2xl font-bold text-[#111111] tracking-tight">热门学习工具</h2>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
             <!-- Card A: English Polishing -->
             <a href="/polish.html"
-                class="block bg-white rounded-2xl p-8 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-gray-100 group">
-                <div class="flex items-start space-x-4">
-                    <div
-                        class="text-5xl bg-blue-50 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                        📚
+                class="relative block bg-white rounded-[2rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(8,112,184,0.07)] hover:-translate-y-1 hover:scale-[1.01] hover:bg-blue-50/40 transition-all duration-500 group overflow-hidden">
+                <div class="flex items-start space-x-6 md:space-x-8 relative z-10">
+                    <div class="flex-shrink-0">
+                        <div
+                            class="w-20 h-20 rounded-full bg-blue-100/50 flex items-center justify-center text-4xl group-hover:scale-110 group-hover:bg-blue-100 transition-all duration-500">
+                            📚
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                    <div class="flex-1 py-1">
+                        <h3
+                            class="text-2xl font-bold text-[#111111] mb-3 group-hover:text-blue-600 transition-colors duration-300">
                             英语润色专家</h3>
-                        <p class="text-gray-500 leading-relaxed">
-                            中翻英、地道化润色、语法深度解析。<br>
-                            <span class="text-sm text-blue-400 mt-2 inline-block">立即体验 &rarr;</span>
+                        <p class="text-slate-500 leading-7 text-lg mb-6">
+                            中翻英、地道化润色、语法深度解析。
                         </p>
+                        <span
+                            class="inline-flex items-center text-blue-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                            立即体验
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </span>
                     </div>
                 </div>
             </a>
 
             <!-- Card B: Scenario Dialogue -->
             <a href="/scenario.html"
-                class="block bg-white rounded-2xl p-8 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-gray-100 group">
-                <div class="flex items-start space-x-4">
-                    <div
-                        class="text-5xl bg-green-50 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                        🗣️
+                class="relative block bg-white rounded-[2rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(8,112,184,0.07)] hover:-translate-y-1 hover:scale-[1.01] hover:bg-green-50/40 transition-all duration-500 group overflow-hidden">
+                <div class="flex items-start space-x-6 md:space-x-8 relative z-10">
+                    <div class="flex-shrink-0">
+                        <div
+                            class="w-20 h-20 rounded-full bg-green-100/50 flex items-center justify-center text-4xl group-hover:scale-110 group-hover:bg-green-100 transition-all duration-500">
+                            🗣️
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
+                    <div class="flex-1 py-1">
+                        <h3
+                            class="text-2xl font-bold text-[#111111] mb-3 group-hover:text-green-600 transition-colors duration-300">
                             沉浸式场景对话</h3>
-                        <p class="text-gray-500 leading-relaxed">
-                            角色扮演、AI 实时对练、情景模拟。<br>
-                            <span class="text-sm text-green-400 mt-2 inline-block">立即体验 &rarr;</span>
+                        <p class="text-slate-500 leading-7 text-lg mb-6">
+                            角色扮演、AI 实时对练、情景模拟。
                         </p>
+                        <span
+                            class="inline-flex items-center text-green-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                            立即体验
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </span>
                     </div>
                 </div>
             </a>
 
             <!-- Card C: Text Reader -->
             <a href="/reader.html"
-                class="block bg-white rounded-2xl p-8 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-gray-100 group">
-                <div class="flex items-start space-x-4">
-                    <div
-                        class="text-5xl bg-purple-50 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                        🎧
+                class="relative block bg-white rounded-[2rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(8,112,184,0.07)] hover:-translate-y-1 hover:scale-[1.01] hover:bg-purple-50/40 transition-all duration-500 group overflow-hidden">
+                <div class="flex items-start space-x-6 md:space-x-8 relative z-10">
+                    <div class="flex-shrink-0">
+                        <div
+                            class="w-20 h-20 rounded-full bg-purple-100/50 flex items-center justify-center text-4xl group-hover:scale-110 group-hover:bg-purple-100 transition-all duration-500">
+                            🎧
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+                    <div class="flex-1 py-1">
+                        <h3
+                            class="text-2xl font-bold text-[#111111] mb-3 group-hover:text-purple-600 transition-colors duration-300">
                             智能文本领读</h3>
-                        <p class="text-gray-500 leading-relaxed">
-                            支持多倍速播放、翻译，独创“影子跟读”模式辅助记忆。<br>
-                            <span class="text-sm text-purple-400 mt-2 inline-block">立即体验 &rarr;</span>
+                        <p class="text-slate-500 leading-7 text-lg mb-6">
+                            支持多倍速播放、翻译，独创“影子跟读”模式。
                         </p>
+                        <span
+                            class="inline-flex items-center text-purple-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                            立即体验
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </span>
                     </div>
                 </div>
             </a>
 
             <!-- Card D: Sentence Builder -->
             <a href="/builder.html"
-                class="block bg-white rounded-2xl p-8 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 border border-gray-100 group">
-                <div class="flex items-start space-x-4">
-                    <div
-                        class="text-5xl bg-orange-50 p-4 rounded-xl group-hover:scale-110 transition-transform duration-300">
-                        🧩
+                class="relative block bg-white rounded-[2rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(8,112,184,0.07)] hover:-translate-y-1 hover:scale-[1.01] hover:bg-orange-50/40 transition-all duration-500 group overflow-hidden">
+                <div class="flex items-start space-x-6 md:space-x-8 relative z-10">
+                    <div class="flex-shrink-0">
+                        <div
+                            class="w-20 h-20 rounded-full bg-orange-100/50 flex items-center justify-center text-4xl group-hover:scale-110 group-hover:bg-orange-100 transition-all duration-500">
+                            🧩
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
+                    <div class="flex-1 py-1">
+                        <h3
+                            class="text-2xl font-bold text-[#111111] mb-3 group-hover:text-orange-600 transition-colors duration-300">
                             场景连词成句</h3>
-                        <p class="text-gray-500 leading-relaxed">
-                            精选海量场景语料库，通过填空练习掌握地道句式搭配。<br>
-                            <span class="text-sm text-orange-400 mt-2 inline-block">立即体验 &rarr;</span>
+                        <p class="text-slate-500 leading-7 text-lg mb-6">
+                            精选海量场景语料库，通过填空练习掌握地道搭配。
                         </p>
+                        <span
+                            class="inline-flex items-center text-orange-500 font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                            立即体验
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                        </span>
                     </div>
                 </div>
             </a>
@@ -127,7 +205,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="text-center text-gray-400 py-8 text-sm">
+    <footer class="text-center text-slate-400 py-12 text-sm bg-gradient-to-t from-white to-transparent">
         <p>&copy; 2024 AI English Learning. All rights reserved.</p>
     </footer>
 
