@@ -1,0 +1,44 @@
+[
+    {
+        "id": "life_coffee",
+        "icon": "☕",
+        "difficulty": "★☆☆",
+        "title": "咖啡厅点单",
+        "description": "学习如何用英语点一杯你喜欢的咖啡，并处理常见的点单对话。"
+    },
+    {
+        "id": "travel_hotel",
+        "icon": "🏨",
+        "difficulty": "★★☆",
+        "title": "酒店办理入住",
+        "description": "模拟办理入住手续，询问早餐时间、Wi-Fi 密码等实用信息。"
+    },
+    {
+        "id": "work_interview",
+        "icon": "💼",
+        "difficulty": "★★★",
+        "title": "求职面试",
+        "description": "挑战经典的面试问题，展示你的专业能力和自信心。"
+    },
+    {
+        "id": "social_party",
+        "icon": "🎉",
+        "difficulty": "★★☆",
+        "title": "派对闲聊",
+        "description": "在社交场合轻松破冰，聊聊兴趣爱好，结交新朋友。"
+    },
+    {
+        "id": "shopping_grocery",
+        "icon": "🛒",
+        "difficulty": "★☆☆",
+        "title": "超市购物",
+        "description": "询问商品位置、价格，以及结账时的常用对话。"
+    },
+    {
+        "id": "emergency_hospital",
+        "icon": "🚑",
+        "difficulty": "★★★",
+        "title": "突发就医",
+        "description": "描述身体不适症状，能够听懂医生的基本指令和建议。"
+    }
+]

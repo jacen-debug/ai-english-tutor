@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沉浸式场景对话 - AI 赋能 英语学习</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-slate-50 to-blue-50/50 min-h-screen text-[#111111] selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Header -->
+    <header class="relative py-12 px-4 text-center max-w-7xl mx-auto">
+        <a href="index.html"
+            class="absolute left-6 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 text-slate-500 hover:text-blue-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+        </a>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 tracking-tight text-[#111111]">
+            沉浸式场景对话
+        </h1>
+        <p class="text-slate-500 text-lg md:text-xl font-normal max-w-2xl mx-auto tracking-wide">
+            选择一个场景，开始你的 AI 实战演练
+        </p>
+    </header>
+
+    <!-- Main Content: Scenario Grid -->
+    <main class="container mx-auto px-6 pb-24 max-w-7xl">
+        <div id="scenario-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Loading State -->
+            <div class="col-span-full text-center py-20 text-slate-400">
+                <div class="animate-pulse flex flex-col items-center">
+                    <div class="h-4 bg-slate-200 rounded w-1/4 mb-4"></div>
+                    <div class="h-4 bg-slate-200 rounded w-1/3"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center text-slate-400 pb-12 text-sm">
+        <p class="animate-bounce-slow">✨ 更多场景，敬请期待……</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const grid = document.getElementById('scenario-grid');
+
+            try {
+                const response = await fetch('/data/scenarios.json');
+                if (!response.ok) throw new Error('Failed to load scenarios');
+                const scenarios = await response.json();
+
+                renderScenarios(scenarios);
+            } catch (error) {
+                console.error('Error loading scenarios:', error);
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-10 text-red-400 bg-red-50 rounded-3xl">
+                        <p>加载场景失败，请刷新重试</p>
+                    </div>
+                `;
+            }
+
+            function renderScenarios(data) {
+                grid.innerHTML = ''; // Clear loading state
+
+                data.forEach(item => {
+                    const card = document.createElement('a');
+                    card.href = `chat.html?id=${item.id}`;
+                    card.className = `
+                        relative group block bg-white rounded-3xl p-8 
+                        shadow-[0_10px_30px_rgba(0,0,0,0.04)] 
+                        hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] 
+                        hover:-translate-y-1 transition-all duration-300 ease-out
+                        border border-transparent hover:border-blue-50
+                    `;
+
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-3xl group-hover:scale-110 group-hover:bg-blue-100 transition-all duration-300">
+                                ${item.icon}
+                            </div>
+                            <div class="px-3 py-1 rounded-full bg-slate-50 text-xs font-semibold text-slate-400 tracking-wider">
+                                ${item.difficulty}
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-2xl font-bold text-slate-800 mb-3 group-hover:text-blue-600 transition-colors">
+                            ${item.title}
+                        </h3>
+                        
+                        <p class="text-slate-500 leading-relaxed text-[15px] mb-8 min-h-[48px]">
+                            ${item.description}
+                        </p>
+                        
+                        <button class="w-full py-3.5 rounded-xl bg-blue-600 text-white font-semibold shadow-lg shadow-blue-200 group-hover:bg-blue-500 group-hover:shadow-blue-300 transition-all active:scale-[0.98]">
+                            开始练习
+                        </button>
+                    `;
+
+                    grid.appendChild(card);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
