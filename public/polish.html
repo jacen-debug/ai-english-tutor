@@ -30,137 +30,126 @@
 
 <body class="bg-gradient-to-b from-blue-50/60 via-white to-white min-h-screen text-[#111111] overflow-x-hidden">
 
-    <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 py-6 px-6 md:px-12 flex items-center justify-between z-50">
-        <a href="index.html"
-            class="w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex items-center justify-center hover:scale-105 transition-transform duration-300 group">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 group-hover:text-[#111111]"
-                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-        </a>
-        <h1
-            class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-bold tracking-tight text-[#111111]">
-            English Polishing
+    <!-- Header (Static, Centered) -->
+    <header class="py-10 text-center">
+        <h1 class="text-4xl font-bold tracking-tight text-[#111111]">
+            英语润色专家
         </h1>
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-6 pt-32 pb-12 max-w-6xl">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 min-h-[600px]">
+    <main class="container mx-auto px-6 pb-20 max-w-6xl">
 
-            <!-- Left Column: Input Zone -->
-            <div class="flex flex-col h-full space-y-6">
-                <div class="flex-1 relative group">
-                    <div
-                        class="absolute inset-0 bg-blue-100/20 rounded-[2rem] transform rotate-1 transition-transform group-hover:rotate-2 duration-500">
-                    </div>
-                    <textarea id="inputText"
-                        class="relative w-full h-full min-h-[400px] p-8 md:p-10 rounded-[2rem] bg-white shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] resize-none focus:outline-none focus:shadow-[0_25px_60px_-12px_rgba(59,130,246,0.1)] transition-all duration-300 text-lg md:text-xl leading-relaxed text-slate-700 placeholder-slate-300"
-                        placeholder="Paste your English text here... 
+        <!-- Row 1: Comparison Zone -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 
-Examples:
-- I want go home.
-- Please give me suggestion.
-- How to say this in English?"></textarea>
-                </div>
+            <!-- Left: Original Text -->
+            <div class="relative group h-full">
+                <textarea id="inputText"
+                    class="w-full h-full min-h-[400px] p-8 md:p-10 rounded-3xl bg-gray-50 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] resize-none focus:outline-none focus:bg-white focus:shadow-[0_20px_40px_-10px_rgba(59,130,246,0.1)] transition-all duration-300 text-lg md:text-xl leading-relaxed text-slate-700 placeholder-slate-400"
+                    placeholder="请输入您想润色的英文..."></textarea>
 
+                <!-- Action Button (Inside Input Box) -->
                 <button id="polishBtn"
-                    class="w-full py-5 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold text-lg tracking-wide shadow-lg shadow-blue-600/30 hover:shadow-blue-600/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center space-x-2 group">
-                    <span class="group-hover:rotate-12 transition-transform duration-300 text-xl">✨</span>
-                    <span id="btnText">Polish My English</span>
+                    class="absolute bottom-6 right-6 px-8 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold text-lg tracking-wide shadow-lg shadow-blue-600/30 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center space-x-2 z-10">
+                    <span>✨ 开始润色</span>
                     <div id="loadingSpinner"
-                        class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin ml-2">
+                        class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin">
                     </div>
                 </button>
             </div>
 
-            <!-- Right Column: Output Zone -->
-            <div id="outputZone" class="relative">
-
-                <!-- Placeholder State -->
-                <div id="placeholderState"
-                    class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 opacity-60">
-                    <div
-                        class="w-24 h-24 mb-6 rounded-full bg-slate-50 flex items-center justify-center text-4xl animate-pulse">
-                        📝
-                    </div>
-                    <h3 class="text-xl font-medium text-slate-400 mb-2">Ready to Polish</h3>
-                    <p class="text-slate-400 max-w-xs mx-auto">Your polished text, detailed analysis, and score will
-                        appear here.</p>
-                </div>
-
-                <!-- Result State (Hidden by default) -->
-                <div id="resultState" class="hidden space-y-6 animate-[fadeIn_0.5s_ease-out]">
-
-                    <!-- Score Card (Hidden Requested) -->
-                    <!--
-                    <div id="scoreCard"
-                        class="bg-white rounded-3xl p-6 flex items-center justify-between shadow-sm border border-slate-50">
-                        <div>
-                            <span class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Fluency
-                                Score</span>
-                            <div class="flex items-baseline mt-1">
-                                <span id="scoreValue" class="text-4xl font-bold text-[#111111]">--</span>
-                                <span class="text-slate-400 ml-1 text-lg">/100</span>
-                            </div>
-                        </div>
-                        <div id="scoreIndicator"
-                            class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl">
-                        </div>
-                    </div>
-                    -->
-
-                    <!-- Polished Text -->
-                    <div
-                        class="bg-white rounded-[2rem] p-8 md:p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] border border-blue-50">
-                        <h3 class="text-sm font-bold text-blue-600 uppercase tracking-wider mb-4 flex items-center">
-                            <span class="w-2 h-2 rounded-full bg-blue-600 mr-2"></span>
-                            ✨ 润色口语
-                        </h3>
-                        <p id="polishedText"
-                            class="text-xl md:text-2xl font-medium text-[#111111] leading-relaxed whitespace-pre-wrap">
-                            <!-- Populated by JS -->
-                        </p>
-                    </div>
-
-                    <!-- Analysis Bubble -->
-                    <div class="bg-slate-50 rounded-[2rem] p-8 border border-slate-100">
-                        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">💡 深度解析</h3>
-                        <p id="analysisText" class="text-slate-600 leading-7">
-                            <!-- Populated by JS -->
-                        </p>
-                    </div>
-
-                    <!-- Vocabulary & Idioms -->
-                    <div class="space-y-4">
-                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider ml-2">📖 关键词汇 & 短语</h3>
-                        <div id="vocabContainer" class="flex flex-wrap gap-3">
-                            <!-- Populated by JS -->
-                        </div>
+            <!-- Right: Polished Result -->
+            <div
+                class="relative bg-white rounded-3xl p-8 md:p-10 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)] min-h-[400px] flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-bold text-blue-600 uppercase tracking-wider flex items-center">
+                        <span class="w-2 h-2 rounded-full bg-blue-600 mr-2"></span>
+                        ✨ 润色口语
+                    </h3>
+                    <!-- Copy Button -->
+                    <div class="group relative">
+                        <button onclick="copyToClipboard('polishedText', this)"
+                            class="text-gray-400 hover:text-blue-600 transition-colors p-1 rounded-md hover:bg-blue-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                            </svg>
+                        </button>
+                        <span
+                            class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none transform -translate-y-1">复制</span>
                     </div>
                 </div>
-
+                <div id="polishedText"
+                    class="flex-1 text-xl md:text-2xl font-medium text-[#111111] leading-relaxed whitespace-pre-wrap">
+                    <!-- Result will appear here -->
+                    <span class="text-slate-300">润色后的结果将显示在这里...</span>
+                </div>
             </div>
         </div>
+
+        <!-- Hidden Comparison Block (Result State) -->
+        <div id="resultDetails" class="hidden space-y-8 animate-[fadeIn_0.5s_ease-out]">
+
+            <!-- Row 2: Analysis -->
+            <div class="bg-white rounded-3xl p-8 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)]">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-[#111111]">💡 深度解析</h3>
+                    <!-- Copy Button -->
+                    <div class="group relative">
+                        <button onclick="copyToClipboard('analysisText', this)"
+                            class="text-gray-400 hover:text-blue-600 transition-colors p-1 rounded-md hover:bg-blue-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                            </svg>
+                        </button>
+                        <span
+                            class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none transform -translate-y-1">复制</span>
+                    </div>
+                </div>
+                <p id="analysisText" class="text-slate-600 leading-7 text-lg">
+                    <!-- Populated by JS -->
+                </p>
+            </div>
+
+            <!-- Row 3: Vocabulary -->
+            <div class="bg-white rounded-3xl p-8 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.05)]">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-[#111111]">📖 关键词汇 & 短语</h3>
+                    <!-- Copy Button -->
+                    <div class="group relative">
+                        <button onclick="copyToClipboard('vocabContainer', this)"
+                            class="text-gray-400 hover:text-blue-600 transition-colors p-1 rounded-md hover:bg-blue-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                            </svg>
+                        </button>
+                        <span
+                            class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none transform -translate-y-1">复制</span>
+                    </div>
+                </div>
+                <div id="vocabContainer" class="space-y-4">
+                    <!-- Populated by JS (Vertical List) -->
+                </div>
+            </div>
+
+        </div>
+
     </main>
 
     <script>
         const polishBtn = document.getElementById('polishBtn');
-        const btnText = document.getElementById('btnText');
         const loadingSpinner = document.getElementById('loadingSpinner');
         const inputText = document.getElementById('inputText');
-
-        const outputZone = document.getElementById('outputZone');
-        const placeholderState = document.getElementById('placeholderState');
-        const resultState = document.getElementById('resultState');
-
-        const scoreValue = document.getElementById('scoreValue');
-        const scoreIndicator = document.getElementById('scoreIndicator');
         const polishedText = document.getElementById('polishedText');
         const analysisText = document.getElementById('analysisText');
         const vocabContainer = document.getElementById('vocabContainer');
+        const resultDetails = document.getElementById('resultDetails');
 
         polishBtn.addEventListener('click', async () => {
             const text = inputText.value.trim();
@@ -192,91 +181,100 @@ Examples:
         function setLoading(isLoading) {
             if (isLoading) {
                 polishBtn.disabled = true;
-                btnText.textContent = "Polishing...";
                 loadingSpinner.classList.remove('hidden');
                 polishBtn.classList.add('opacity-80', 'cursor-not-allowed');
             } else {
                 polishBtn.disabled = false;
-                btnText.textContent = "Polish My English";
                 loadingSpinner.classList.add('hidden');
                 polishBtn.classList.remove('opacity-80', 'cursor-not-allowed');
             }
         }
 
         function renderResults(data) {
-            // Hide placeholder, show results
-            if (placeholderState) placeholderState.classList.add('hidden');
-            if (resultState) resultState.classList.remove('hidden');
+            // Show details section
+            resultDetails.classList.remove('hidden');
 
             // 1. Polished Text
             if (polishedText) {
-                polishedText.textContent = data.polished;
+                polishedText.innerHTML = data.polished;
+                polishedText.classList.remove('text-slate-300'); // Remove placeholder color
             }
 
-            // 2. Score (Safely handle if element is hidden/removed in DOM)
-            if (scoreValue && scoreIndicator) {
-                animateValue(scoreValue, 0, data.score, 1000);
-
-                if (data.score >= 85) {
-                    scoreIndicator.className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl bg-green-100 text-green-600 shadow-lg shadow-green-200';
-                    scoreIndicator.textContent = '🌟';
-                } else if (data.score >= 60) {
-                    scoreIndicator.className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl bg-yellow-100 text-yellow-600 shadow-lg shadow-yellow-200';
-                    scoreIndicator.textContent = '💪';
-                } else {
-                    scoreIndicator.className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl bg-orange-100 text-orange-600 shadow-lg shadow-orange-200';
-                    scoreIndicator.textContent = '🌱';
-                }
-            }
-
-            // 3. Analysis
+            // 2. Analysis
             if (analysisText) {
                 analysisText.textContent = data.analysis;
             }
 
-            // 4. Vocab & Idioms
+            // 3. Vocab & Idioms (Vertical List)
             if (vocabContainer) {
                 vocabContainer.innerHTML = ''; // Clear previous
 
                 const items = [...(data.vocabulary || []), ...(data.idioms || [])];
 
                 if (items.length === 0) {
-                    vocabContainer.innerHTML = '<span class="text-slate-400 italic px-2">No specific learning points detected.</span>';
+                    vocabContainer.innerHTML = '<div class="text-slate-400 italic">No specific learning points detected.</div>';
                 } else {
-                    items.forEach(item => {
-                        const pill = document.createElement('div');
-                        pill.className = 'inline-flex flex-col bg-white border border-slate-200 rounded-2xl px-5 py-3 shadow-sm hover:shadow-md transition-shadow cursor-default';
+                    items.forEach((item, index) => {
+                        const row = document.createElement('div');
+                        row.className = 'flex items-start p-4 hover:bg-blue-50/50 rounded-xl transition-colors';
 
                         const term = item.word || item.phrase;
                         const meaning = item.meaning;
-                        const ipa = item.ipa ? `<span class="text-slate-400 text-xs font-mono ml-2">[${item.ipa}]</span>` : '';
+                        const ipa = item.ipa ? `<span class="text-slate-400 text-sm font-mono ml-2">[${item.ipa}]</span>` : '';
 
-                        pill.innerHTML = `
-                            <div class="font-bold text-[#111111]">${term} ${ipa}</div>
-                            <div class="text-sm text-slate-500 mt-1">${meaning}</div>
+                        row.innerHTML = `
+                            <div class="font-bold text-blue-600 mr-4 text-lg select-none">${index + 1}.</div>
+                            <div>
+                                <div class="font-bold text-[#111111] text-lg mb-1">${term} ${ipa}</div>
+                                <div class="text-slate-600">${meaning}</div>
+                            </div>
                         `;
-                        vocabContainer.appendChild(pill);
+                        vocabContainer.appendChild(row);
                     });
                 }
             }
-
-            // Smooth scroll to results on mobile
-            if (window.innerWidth < 1024 && resultState) {
-                resultState.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
         }
 
-        function animateValue(obj, start, end, duration) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                obj.innerHTML = Math.floor(progress * (end - start) + start);
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
+        async function copyToClipboard(elementId, btnElement) {
+            const target = document.getElementById(elementId);
+            if (!target) return;
+
+            const textToCopy = target.innerText;
+
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+
+                // Feedback
+                const originalSvg = btnElement.innerHTML;
+                const tooltip = btnElement.nextElementSibling;
+
+                // Change icon temporarily to Check
+                btnElement.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                `;
+
+                if (tooltip) {
+                    tooltip.textContent = "已复制！";
+                    tooltip.classList.remove('opacity-0');
                 }
-            };
-            window.requestAnimationFrame(step);
+
+                setTimeout(() => {
+                    btnElement.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                    `;
+                    if (tooltip) {
+                        tooltip.textContent = "复制";
+                        tooltip.classList.add('opacity-0');
+                    }
+                }, 2000);
+
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
         }
     </script>
 </body>
