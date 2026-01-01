@@ -1,44 +1,221 @@
 [
-    {
-        "id": "life_coffee",
-        "icon": "☕",
-        "difficulty": "★☆☆",
-        "title": "咖啡厅点单",
-        "description": "学习如何用英语点一杯你喜欢的咖啡，并处理常见的点单对话。"
-    },
-    {
-        "id": "travel_hotel",
-        "icon": "🏨",
-        "difficulty": "★★☆",
-        "title": "酒店办理入住",
-        "description": "模拟办理入住手续，询问早餐时间、Wi-Fi 密码等实用信息。"
-    },
-    {
-        "id": "work_interview",
-        "icon": "💼",
-        "difficulty": "★★★",
-        "title": "求职面试",
-        "description": "挑战经典的面试问题，展示你的专业能力和自信心。"
-    },
-    {
-        "id": "social_party",
-        "icon": "🎉",
-        "difficulty": "★★☆",
-        "title": "派对闲聊",
-        "description": "在社交场合轻松破冰，聊聊兴趣爱好，结交新朋友。"
-    },
-    {
-        "id": "shopping_grocery",
-        "icon": "🛒",
-        "difficulty": "★☆☆",
-        "title": "超市购物",
-        "description": "询问商品位置、价格，以及结账时的常用对话。"
-    },
-    {
-        "id": "emergency_hospital",
-        "icon": "🚑",
-        "difficulty": "★★★",
-        "title": "突发就医",
-        "description": "描述身体不适症状，能够听懂医生的基本指令和建议。"
-    }
+  {
+    "id": "life_coffee",
+    "category": "日常生活",
+    "icon": "☕️",
+    "title": "咖啡厅点单",
+    "description": "最基础的生存口语，学会如何调整冰块和甜度。",
+    "difficulty": "★☆☆",
+    "roles": [
+      "Barista (店员)",
+      "Customer (顾客)"
+    ],
+    "script": [
+      {
+        "speaker": "Barista",
+        "text": "Hi there! What can I get for you today?",
+        "translation": "你好！今天想喝点什么？"
+      },
+      {
+        "speaker": "Customer",
+        "text": "I'll have an Iced Latte, please.",
+        "translation": "我想要一杯冰拿铁。"
+      },
+      {
+        "speaker": "Barista",
+        "text": "Sure. What size would you like?",
+        "translation": "没问题。要什么杯型？"
+      },
+      {
+        "speaker": "Customer",
+        "text": "A Grande, please.",
+        "translation": "大杯。"
+      },
+      {
+        "speaker": "Barista",
+        "text": "Anything else?",
+        "translation": "还要别的吗？"
+      },
+      {
+        "speaker": "Customer",
+        "text": "No, that's all. Thanks.",
+        "translation": "没有了，就这些。谢谢。"
+      }
+    ]
+  },
+  {
+    "id": "travel_airport",
+    "category": "出国旅游",
+    "icon": "✈️",
+    "title": "机场值机 Check-in",
+    "description": "搞定登机牌和行李托运，听懂地勤的关键提问。",
+    "difficulty": "★★☆",
+    "roles": [
+      "Agent (地勤)",
+      "Traveler (旅客)"
+    ],
+    "script": [
+      {
+        "speaker": "Agent",
+        "text": "Good morning. May I have your passport, please?",
+        "translation": "早上好。请出示您的护照。"
+      },
+      {
+        "speaker": "Traveler",
+        "text": "Here you go.",
+        "translation": "给您。"
+      },
+      {
+        "speaker": "Agent",
+        "text": "Are you checking any bags?",
+        "translation": "您有行李要托运吗？"
+      },
+      {
+        "speaker": "Traveler",
+        "text": "Yes, just this suitcase.",
+        "translation": "有的，就这一个箱子。"
+      },
+      {
+        "speaker": "Agent",
+        "text": "Place it on the scale, please. Here is your boarding pass.",
+        "translation": "请放到传送带上。这是您的登机牌。"
+      }
+    ]
+  },
+  {
+    "id": "business_meeting",
+    "category": "商务办公",
+    "icon": "🤝",
+    "title": "初次商务会面",
+    "description": "得体地自我介绍，并开启一段轻松的寒暄。",
+    "difficulty": "★★☆",
+    "roles": [
+      "Alex (客户)",
+      "You (你)"
+    ],
+    "script": [
+      {
+        "speaker": "Alex",
+        "text": "Hi, I'm Alex from TechSolutions. Nice to meet you.",
+        "translation": "你好，我是 TechSolutions 的 Alex。很高兴见到你。"
+      },
+      {
+        "speaker": "You",
+        "text": "Nice to meet you too, Alex. I've heard a lot about your work.",
+        "translation": "我也很高兴见到你，Alex。我对你们的工作久仰大名。"
+      },
+      {
+        "speaker": "Alex",
+        "text": "Thank you. Did you have any trouble finding our office?",
+        "translation": "谢谢。我们要这儿好找吗（路上顺利吗）？"
+      },
+      {
+        "speaker": "You",
+        "text": "Not at all. The directions were very clear.",
+        "translation": "完全没问题，指引非常清晰。"
+      }
+    ]
+  },
+  {
+    "id": "life_directions",
+    "category": "日常生活",
+    "icon": "🗺️",
+    "title": "街头问路",
+    "description": "手机没电时，如何礼貌地向路人询问地铁站方向。",
+    "difficulty": "★☆☆",
+    "roles": [
+      "Stranger (路人)",
+      "You (你)"
+    ],
+    "script": [
+      {
+        "speaker": "You",
+        "text": "Excuse me, could you tell me where the nearest subway station is?",
+        "translation": "打扰一下，请问最近的地铁站在哪里？"
+      },
+      {
+        "speaker": "Stranger",
+        "text": "Sure! Go straight for two blocks, then turn left.",
+        "translation": "没问题！直走两个街区，然后左转。"
+      },
+      {
+        "speaker": "You",
+        "text": "Got it. Is it far from here?",
+        "translation": "明白了。离这儿远吗？"
+      },
+      {
+        "speaker": "Stranger",
+        "text": "No, it's about a 5-minute walk.",
+        "translation": "不远，大概走5分钟就到了。"
+      }
+    ]
+  },
+  {
+    "id": "travel_hotel",
+    "category": "出国旅游",
+    "icon": "🏨",
+    "title": "酒店办理入住",
+    "description": "确认预订信息，并询问早餐和Wi-Fi密码。",
+    "difficulty": "★★☆",
+    "roles": [
+      "Receptionist (前台)",
+      "Guest (客人)"
+    ],
+    "script": [
+      {
+        "speaker": "Receptionist",
+        "text": "Welcome to the Grand Hotel. Checking in?",
+        "translation": "欢迎光临大饭店。办理入住吗？"
+      },
+      {
+        "speaker": "Guest",
+        "text": "Yes, I have a reservation under the name Li.",
+        "translation": "是的，我预订了，名字是 Li。"
+      },
+      {
+        "speaker": "Receptionist",
+        "text": "I see it. Standard room for two nights. Sign here please.",
+        "translation": "看到了。标准间两晚。请在这里签字。"
+      },
+      {
+        "speaker": "Guest",
+        "text": "By the way, is breakfast included?",
+        "translation": "顺便问一下，含早餐吗？"
+      }
+    ]
+  },
+  {
+    "id": "business_interview",
+    "category": "商务办公",
+    "icon": "💼",
+    "title": "简单的求职面试",
+    "description": "回答经典的“请自我介绍”以及“你的优势是什么”。",
+    "difficulty": "★★★",
+    "roles": [
+      "Interviewer (面试官)",
+      "Candidate (候选人)"
+    ],
+    "script": [
+      {
+        "speaker": "Interviewer",
+        "text": "Tell me a little about yourself.",
+        "translation": "请简单介绍一下你自己。"
+      },
+      {
+        "speaker": "Candidate",
+        "text": "I have 3 years of experience in web design and I love coding.",
+        "translation": "我有3年的网页设计经验，而且我很热爱编程。"
+      },
+      {
+        "speaker": "Interviewer",
+        "text": "What do you consider your greatest strength?",
+        "translation": "你觉得你最大的优势是什么？"
+      },
+      {
+        "speaker": "Candidate",
+        "text": "I'm a fast learner and good at problem-solving.",
+        "translation": "我学东西很快，而且擅长解决问题。"
+      }
+    ]
+  }
 ]

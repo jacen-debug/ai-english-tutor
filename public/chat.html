@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 实战演练</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Hide scrollbar */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        /* Bubble Animations */
+        @keyframes messagePopIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .pop-in {
+            animation: messagePopIn 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 h-screen flex flex-col overflow-hidden text-[#111111]">
+
+    <!-- Header -->
+    <header class="flex-none bg-white border-b border-gray-100 z-50 shadow-sm relative">
+        <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="scenario.html" class="p-2 -ml-2 text-slate-400 hover:text-slate-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </a>
+
+            <div class="text-center">
+                <h1 id="scenarioTitle" class="font-bold text-lg text-slate-800">加载中...</h1>
+                <div class="h-1 w-24 bg-gray-100 rounded-full mx-auto mt-1 overflow-hidden">
+                    <div id="progressBar" class="h-full bg-blue-500 w-0 transition-all duration-500"></div>
+                </div>
+            </div>
+
+            <div class="w-10"></div> <!-- Spacer for centering -->
+        </div>
+    </header>
+
+    <!-- Chat Container -->
+    <main id="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth pb-32 max-w-3xl mx-auto w-full">
+        <!-- Messages will be injected here -->
+        <div id="startSpacer" class="h-4"></div>
+    </main>
+
+    <!-- Footer Input Area -->
+    <footer class="flex-none bg-white border-t border-gray-100 shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.05)] z-50">
+        <div class="max-w-3xl mx-auto">
+            <!-- Hint Area -->
+            <div class="py-3 px-4 bg-blue-50/50 border-b border-blue-50 text-center">
+                <p class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-1">请翻译</p>
+                <p id="translationHint" class="text-slate-700 font-medium text-lg">...</p>
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-4 flex items-end space-x-3">
+                <textarea id="userInput" rows="1"
+                    class="flex-1 bg-gray-50 border-0 rounded-2xl px-5 py-4 text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all text-lg resize-none max-h-32 shadow-inner"
+                    placeholder="输入你的回答..."></textarea>
+
+                <button id="sendBtn"
+                    class="flex-none w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-blue-200 shadow-lg hover:bg-blue-500 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-0.5" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path
+                            d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Evaluation Modal -->
+    <div id="evalModal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0" id="evalBackdrop"></div>
+        <div class="absolute inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center p-4">
+            <div class="bg-white rounded-t-3xl md:rounded-3xl shadow-2xl w-full max-w-md transform translate-y-full md:translate-y-10 opacity-0 transition-all duration-500 flex flex-col max-h-[90vh]"
+                id="evalContent">
+
+                <!-- Modal Header -->
+                <div class="p-8 text-center border-b border-gray-50">
+                    <div
+                        class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 animate-bounce">
+                        🏆
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">演练完成!</h2>
+                    <div class="flex justify-center items-end space-x-2">
+                        <span id="scoreVal" class="text-6xl font-bold text-blue-600 tracking-tighter">--</span>
+                        <span class="text-sm text-slate-400 font-medium mb-4">/ 100</span>
+                    </div>
+                </div>
+
+                <!-- Scrollable Report -->
+                <div class="p-6 overflow-y-auto flex-1 space-y-6 bg-slate-50/50">
+                    <!-- General Feedback -->
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-3">AI 综合点评</h3>
+                        <p id="feedbackText" class="text-slate-600 leading-relaxed text-[15px]"></p>
+                    </div>
+
+                    <!-- Improvements -->
+                    <div id="improvementsList" class="space-y-4">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Footer Action -->
+                <div class="p-6 border-t border-gray-50 bg-white md:rounded-b-3xl">
+                    <a href="scenario.html"
+                        class="block w-full py-4 rounded-xl bg-slate-900 text-white font-bold text-center shadow-lg hover:bg-slate-800 transition-all">
+                        返回大厅
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay"
+        class="fixed inset-0 z-[90] bg-white/80 backdrop-blur-sm flex items-center justify-center hidden">
+        <div class="text-center">
+            <div class="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4">
+            </div>
+            <p class="text-blue-600 font-medium animate-pulse">正在分析表现...</p>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let scenario = null;
+        let script = [];
+        let currentStep = 0;
+        let userHistory = []; // { user: string, standard: string }
+        let isProcessing = false;
+
+        // DOM Elements
+        const chatContainer = document.getElementById('chatContainer');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const translationHint = document.getElementById('translationHint');
+        const progressBar = document.getElementById('progressBar');
+        const scenarioTitle = document.getElementById('scenarioTitle');
+
+        // Init
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const scenarioId = urlParams.get('id');
+
+            if (!scenarioId) {
+                alert('No scenario ID provided');
+                window.location.href = 'scenario.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('/data/scenarios.json');
+                const scenarios = await response.json();
+                scenario = scenarios.find(s => s.id === scenarioId);
+
+                if (!scenario) throw new Error('Scenario not found');
+
+                // Initialize Game
+                script = scenario.script;
+                scenarioTitle.textContent = scenario.title;
+                document.title = `${scenario.title} - AI Practice`;
+
+                // Start Loop
+                processNextStep();
+
+            } catch (error) {
+                console.error(error);
+                alert('Error loading scenario');
+            }
+        });
+
+        // Core Game Loop
+        async function processNextStep() {
+            updateProgress();
+
+            // Check if game over
+            if (currentStep >= script.length) {
+                finishGame();
+                return;
+            }
+
+            const line = script[currentStep];
+
+            // Extract pure role names from "Name (Desc)" format
+            const userRoleFull = scenario.roles[1];
+            const userRoleName = userRoleFull.split(' (')[0]; // "Customer (顾客)" -> "Customer"
+
+            const isNpc = line.speaker !== userRoleName;
+
+            if (isNpc) {
+                // NPC Turn
+                setInputState('disabled', '对方正在输入...');
+
+                await delay(800 + Math.random() * 500); // Simulate typing
+                renderBubble(line.text, 'npc');
+
+                currentStep++;
+                processNextStep(); // Recursively continue
+
+            } else {
+                // User Turn
+                setInputState('enabled', line.translation);
+                // Wait for user input (break recursion until event listener triggers)
+            }
+        }
+
+        // User Action
+        sendBtn.addEventListener('click', handleUserSubmit);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleUserSubmit();
+            }
+        });
+
+        async function handleUserSubmit() {
+            if (isProcessing) return;
+
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            isProcessing = true;
+            const currentLine = script[currentStep];
+
+            // 1. Render User Bubble
+            renderBubble(text, 'user');
+            userInput.value = '';
+
+            // 2. Record History
+            userHistory.push({
+                user: text,
+                standard: currentLine.text
+            });
+
+            // 3. Continue Game
+            currentStep++;
+            isProcessing = false;
+            await delay(300); // Small pause for UX
+            processNextStep();
+        }
+
+        // --- Helpers ---
+
+        function renderBubble(text, type) {
+            const isUser = type === 'user';
+            const bubble = document.createElement('div');
+
+            bubble.className = `flex w-full ${isUser ? 'justify-end' : 'justify-start'} pop-in`;
+            bubble.innerHTML = `
+                <div class="max-w-[80%] p-4 rounded-2xl text-[17px] leading-relaxed shadow-sm 
+                    ${isUser
+                    ? 'bg-blue-600 text-white rounded-tr-none'
+                    : 'bg-white text-slate-700 rounded-tl-none border border-slate-100'
+                }">
+                    ${text}
+                </div>
+            `;
+
+            chatContainer.appendChild(bubble);
+            chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
+        }
+
+        function setInputState(state, hintText) {
+            translationHint.textContent = hintText;
+
+            if (state === 'disabled') {
+                userInput.disabled = true;
+                sendBtn.disabled = true;
+                userInput.placeholder = "等待对方...";
+                userInput.parentElement.classList.add('opacity-50');
+            } else {
+                userInput.disabled = false;
+                sendBtn.disabled = false;
+                userInput.placeholder = "输入你的回答...";
+                userInput.parentElement.classList.remove('opacity-50');
+                userInput.focus();
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentStep / script.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        async function finishGame() {
+            setInputState('disabled', '演练结束');
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+
+            try {
+                const response = await fetch('/api/evaluate-scenario', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        history: userHistory,
+                        scenarioTitle: scenario.title
+                    })
+                });
+
+                if (!response.ok) throw new Error('Evaluation failed');
+                const result = await response.json();
+
+                showEvaluationResult(result);
+
+            } catch (error) {
+                console.error(error);
+                alert('Failed to evaluate conversation');
+                // Allow user to leave
+                window.location.href = 'scenario.html';
+            } finally {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }
+        }
+
+        function showEvaluationResult(data) {
+            const modal = document.getElementById('evalModal');
+            const backdrop = document.getElementById('evalBackdrop');
+            const content = document.getElementById('evalContent');
+            const scoreVal = document.getElementById('scoreVal');
+            const feedbackText = document.getElementById('feedbackText');
+            const improvementsList = document.getElementById('improvementsList');
+
+            // Populate Data
+            // Animate Score
+            animateValue(scoreVal, 0, data.score, 1500);
+
+            feedbackText.textContent = data.feedback;
+
+            // Generate Improvements
+            improvementsList.innerHTML = '';
+            if (data.improvements && data.improvements.length > 0) {
+                data.improvements.forEach(imp => {
+                    const item = document.createElement('div');
+                    item.className = 'bg-white p-5 rounded-2xl shadow-sm border border-orange-100/50';
+                    item.innerHTML = `
+                        <div class="flex items-start gap-3 mb-2">
+                            <span class="px-2 py-0.5 bg-red-50 text-red-500 text-xs font-bold rounded uppercase tracking-wider mt-1">Mistake</span>
+                            <p class="text-slate-400 line-through Decoration-red-300 decoration-2">${imp.original}</p>
+                        </div>
+                        <div class="flex items-start gap-3 mb-3">
+                            <span class="px-2 py-0.5 bg-green-50 text-green-600 text-xs font-bold rounded uppercase tracking-wider mt-1">Better</span>
+                            <p class="text-[#111111] font-medium text-lg">${imp.better}</p>
+                        </div>
+                        <p class="text-slate-500 text-sm pl-1 border-l-2 border-slate-100 ml-1">
+                            💡 ${imp.reason}
+                        </p>
+                    `;
+                    improvementsList.appendChild(item);
+                });
+            } else {
+                improvementsList.innerHTML = `
+                    <div class="text-center py-8 text-slate-400">
+                        <p>太棒了！没有发现明显的语法错误。</p>
+                    </div>
+                `;
+            }
+
+            // Show Modal
+            modal.classList.remove('hidden');
+
+            // Animation Frame
+            setTimeout(() => {
+                backdrop.classList.remove('opacity-0');
+                content.classList.remove('opacity-0', 'translate-y-full');
+                content.classList.add('md:translate-y-0'); // Reset transform for desktop
+            }, 50);
+        }
+
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+    </script>
+</body>
+
+</html>

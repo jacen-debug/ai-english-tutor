@@ -52,6 +52,42 @@ app.post('/api/polish', async (req, res) => {
     }
 });
 
+// Scenario Evaluation Endpoint
+app.post('/api/evaluate-scenario', async (req, res) => {
+    try {
+        const { history, scenarioTitle } = req.body;
+
+        if (!history || !Array.isArray(history)) {
+            return res.status(400).json({ error: 'Valid history array is required' });
+        }
+
+        const completion = await client.chat.completions.create({
+            messages: [
+                {
+                    role: "system",
+                    content: `You are an expert English teacher evaluating a student's performance in a role-play scenario: "${scenarioTitle}".\n\nTask:\nAnalyze the student's inputs (marked as 'user') against the expected standard (marked as 'standard').\n\nReturn Valid JSON:\n{\n  "score": 85, // Overall integer score (0-100)\n  "feedback": "General feedback in Chinese...",\n  "improvements": [\n    {\n      "original": "User's mistake",\n      "better": "Better expression",\n      "reason": "Explanation in Chinese"\n    }\n  ]\n}`
+                },
+                {
+                    role: "user",
+                    content: JSON.stringify(history)
+                }
+            ],
+            model: "deepseek-chat",
+            response_format: { type: "json_object" }
+        });
+
+        const result = JSON.parse(completion.choices[0].message.content);
+        res.json(result);
+
+    } catch (error) {
+        console.error('Error evaluating scenario:', error);
+        res.status(500).json({
+            error: 'Failed to evaluate scenario',
+            details: error.message
+        });
+    }
+});
+
 // Start Server
 const PORT = 3000;
 app.listen(PORT, () => {
