@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Smart Reader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Document Parsers -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                        'glow': '0 0 20px rgba(14, 165, 233, 0.3)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body class="text-slate-800 font-sans antialiased pb-32">
+
+    <!-- Header / Input Area -->
+    <div class="container mx-auto px-4 pt-8 max-w-3xl">
+        <!-- Back to Home Button -->
+        <div class="mb-6">
+            <a href="index.html"
+                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-soft hover:shadow-lg hover:scale-105 transition-all duration-300 text-slate-500 hover:text-brand-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </a>
+        </div>
+
+        <div
+            class="bg-white rounded-3xl shadow-soft p-6 mb-8 relative group transition-all duration-300 hover:shadow-lg">
+            <h1 class="text-2xl font-bold text-slate-800 mb-4 flex items-center">
+                <i class="fa-solid fa-book-open text-brand-500 mr-3"></i>
+                AI Smart Reader
+            </h1>
+
+            <div class="relative">
+                <textarea id="inputText"
+                    class="w-full h-40 p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand-200 resize-none text-lg text-slate-700 placeholder-slate-400 transition-all"
+                    placeholder="在此粘贴英文内容，或点击右下角上传文档..."></textarea>
+
+                <!-- File Upload Trigger -->
+                <div class="absolute bottom-4 right-4 flex gap-2">
+                    <input type="file" id="fileInput" class="hidden" accept=".txt,.docx,.pdf">
+                    <button onclick="document.getElementById('fileInput').click()"
+                        class="bg-white hover:bg-slate-50 text-slate-600 px-4 py-2 rounded-xl shadow-sm border border-slate-100 text-sm font-medium transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        上传文档
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-4 flex justify-end">
+                <button id="generateBtn" onclick="processText()"
+                    class="bg-brand-500 hover:bg-brand-600 text-white px-8 py-3 rounded-full shadow-glow font-bold text-lg transition-transform active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    生成领读脚本
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script View Area -->
+    <div id="scriptContainer" class="container mx-auto px-4 max-w-3xl hidden">
+        <div class="space-y-4" id="sentenceList">
+            <!-- Sentences will be injected here -->
+        </div>
+    </div>
+
+    <!-- Sticky Player -->
+    <div id="playerBar"
+        class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-2xl glass-panel rounded-full shadow-2xl p-4 flex items-center justify-between z-50 transform transition-all duration-500 translate-y-32 opacity-0">
+
+        <!-- Controls -->
+        <div class="flex items-center gap-6 w-full justify-center">
+
+            <!-- Speed Control -->
+            <div class="flex items-center bg-slate-100 rounded-full p-1">
+                <button onclick="setSpeed(0.9)"
+                    class="speed-btn px-3 py-1 rounded-full text-xs font-bold text-slate-500 hover:bg-white hover:shadow-sm transition-all"
+                    data-speed="0.9">0.9x</button>
+                <button onclick="setSpeed(1.0)"
+                    class="speed-btn px-3 py-1 rounded-full text-xs font-bold text-white bg-brand-500 shadow-sm transition-all"
+                    data-speed="1.0">1.0x</button>
+                <button onclick="setSpeed(1.1)"
+                    class="speed-btn px-3 py-1 rounded-full text-xs font-bold text-slate-500 hover:bg-white hover:shadow-sm transition-all"
+                    data-speed="1.1">1.1x</button>
+            </div>
+
+            <!-- Play/Pause -->
+            <button id="playBtn" onclick="togglePlay()"
+                class="w-14 h-14 bg-slate-800 text-white rounded-full flex items-center justify-center text-xl shadow-lg hover:bg-slate-700 transition-colors">
+                <i class="fa-solid fa-play ml-1"></i>
+            </button>
+
+            <!-- Shadowing Mode -->
+            <div class="flex items-center gap-2">
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="shadowToggle" class="sr-only peer">
+                    <div
+                        class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-500">
+                    </div>
+                    <span class="ml-2 text-sm font-medium text-slate-600">影子跟读</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay"
+        class="fixed inset-0 bg-white/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
+        <div class="text-center">
+            <div class="w-16 h-16 border-4 border-brand-100 border-t-brand-500 rounded-full animate-spin mx-auto mb-4">
+            </div>
+            <p class="text-slate-600 font-medium animate-pulse">正在拆解长难句...</p>
+        </div>
+    </div>
+
+    <script>
+        let sentences = [];
+        let currentIndex = 0;
+        let isPlaying = false;
+        let currentUtterance = null;
+        let playbackSpeed = 1.0;
+        let isShadowing = false;
+        let shadowTimer = null;
+
+        // --- File Parsing Logic ---
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const textArea = document.getElementById('inputText');
+            textArea.value = "正在解析文件...";
+
+            try {
+                if (file.type === 'text/plain') {
+                    const text = await file.text();
+                    textArea.value = text;
+                } else if (file.type.includes('word') || file.name.endsWith('.docx')) {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const result = await mammoth.extractRawText({ arrayBuffer });
+                    textArea.value = result.value;
+                } else if (file.type === 'application/pdf') {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    let fullText = '';
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        const pageText = textContent.items.map(item => item.str).join(' ');
+                        fullText += pageText + '\n';
+                    }
+                    textArea.value = fullText;
+                }
+            } catch (err) {
+                console.error(err);
+                alert('文件解析失败，请手动复制文本');
+                textArea.value = "";
+            }
+        });
+
+        // --- API & Rendering Logic ---
+        async function processText() {
+            const text = document.getElementById('inputText').value.trim();
+            if (!text) return alert('请输入或上传英语内容');
+
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+
+            try {
+                const response = await fetch('/api/process-reading', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+
+                if (!response.ok) throw new Error('API Error');
+
+                const data = await response.json();
+                sentences = data.sentences;
+                renderScript();
+                showPlayer();
+
+            } catch (err) {
+                console.error(err);
+                alert('处理失败，请稍后重试');
+            } finally {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }
+        }
+
+        function renderScript() {
+            const container = document.getElementById('sentenceList');
+            document.getElementById('scriptContainer').classList.remove('hidden');
+
+            container.innerHTML = sentences.map((s, index) => `
+                <div onclick="playFromIndex(${index})" 
+                    id="sent-${index}"
+                    class="p-4 rounded-xl cursor-pointer transition-all duration-300 hover:bg-slate-50 border border-transparent hover:border-slate-100 group">
+                    <p class="text-xl font-medium text-slate-800 mb-2 leading-relaxed font-english transition-colors">${s.en}</p>
+                    <p class="text-slate-500 text-base transition-colors">${s.cn}</p>
+                </div>
+            `).join('');
+
+            // Initial scroll to top
+            window.scrollTo({ top: document.getElementById('scriptContainer').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function showPlayer() {
+            const player = document.getElementById('playerBar');
+            player.classList.remove('translate-y-32', 'opacity-0');
+        }
+
+        // --- Player Logic ---
+        function setSpeed(speed) {
+            playbackSpeed = speed;
+            document.querySelectorAll('.speed-btn').forEach(btn => {
+                const btnSpeed = parseFloat(btn.dataset.speed);
+                if (Math.abs(btnSpeed - speed) < 0.01) {
+                    btn.classList.add('bg-brand-500', 'text-white', 'shadow-sm');
+                    btn.classList.remove('text-slate-500', 'hover:bg-white');
+                } else {
+                    btn.classList.remove('bg-brand-500', 'text-white', 'shadow-sm');
+                    btn.classList.add('text-slate-500', 'hover:bg-white');
+                }
+            });
+        }
+
+        document.getElementById('shadowToggle').addEventListener('change', (e) => {
+            isShadowing = e.target.checked;
+        });
+
+        function playFromIndex(index) {
+            currentIndex = index;
+            playCurrentSentence();
+        }
+
+        function togglePlay() {
+            if (isPlaying) {
+                stopPlayback();
+            } else {
+                playCurrentSentence();
+            }
+        }
+
+        function stopPlayback() {
+            window.speechSynthesis.cancel();
+            clearTimeout(shadowTimer);
+            isPlaying = false;
+            updatePlayButton();
+        }
+
+        function updatePlayButton() {
+            const btn = document.getElementById('playBtn');
+            btn.innerHTML = isPlaying
+                ? '<i class="fa-solid fa-pause"></i>'
+                : '<i class="fa-solid fa-play ml-1"></i>';
+        }
+
+        function playCurrentSentence() {
+            if (currentIndex >= sentences.length) {
+                currentIndex = 0;
+                stopPlayback();
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            clearTimeout(shadowTimer);
+            isPlaying = true;
+            updatePlayButton();
+            highlightSentence(currentIndex);
+
+            const text = sentences[currentIndex].en;
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'en-US';
+            utter.rate = playbackSpeed;
+
+            // Get available voices and try to pick a good one
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoice = voices.find(v => v.name.includes('Google US English')) ||
+                voices.find(v => v.lang === 'en-US');
+            if (preferredVoice) utter.voice = preferredVoice;
+
+            // Timer to estimate duration for shadowing (since onend is immediate)
+            const startTime = Date.now();
+
+            utter.onend = () => {
+                if (!isPlaying) return;
+
+                const duration = Date.now() - startTime;
+
+                if (isShadowing) {
+                    // Wait for (duration + 1s)
+                    const waitTime = duration + 1000;
+                    shadowTimer = setTimeout(() => {
+                        if (isPlaying) {
+                            currentIndex++;
+                            playCurrentSentence();
+                        }
+                    }, waitTime);
+                } else {
+                    currentIndex++;
+                    playCurrentSentence();
+                }
+            };
+
+            utter.onerror = (e) => {
+                console.error('Speech synthesis error:', e);
+                stopPlayback();
+            };
+
+            window.speechSynthesis.speak(utter);
+        }
+
+        function highlightSentence(index) {
+            // Remove previous highlights
+            document.querySelectorAll('[id^="sent-"]').forEach(el => {
+                el.classList.remove('bg-brand-50', 'ring-1', 'ring-brand-200');
+                el.querySelector('.font-medium').classList.remove('text-brand-600');
+            });
+
+            // Add new highlight
+            const el = document.getElementById(`sent-${index}`);
+            if (el) {
+                el.classList.add('bg-brand-50', 'ring-1', 'ring-brand-200');
+                el.querySelector('.font-medium').classList.add('text-brand-600');
+
+                // Smart scroll
+                const rect = el.getBoundingClientRect();
+                const isInView = rect.top >= 100 && rect.bottom <= window.innerHeight - 150;
+
+                if (!isInView) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        }
+
+        // Init voices (chrome needs this)
+        window.speechSynthesis.onvoiceschanged = () => {
+            window.speechSynthesis.getVoices();
+        };
+    </script>
+</body>
+
+</html>

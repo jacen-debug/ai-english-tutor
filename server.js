@@ -88,6 +88,46 @@ app.post('/api/evaluate-scenario', async (req, res) => {
     }
 });
 
+// Reading Process Endpoint
+app.post('/api/process-reading', async (req, res) => {
+    try {
+        const { text } = req.body;
+
+        if (!text) {
+            return res.status(400).json({ error: 'Text is required' });
+        }
+
+        const completion = await client.chat.completions.create({
+            messages: [
+                {
+                    role: "system",
+                    content: `你是一个专业的英语领读助教。请将用户输入的英语文本按意群或句子进行智能拆分，并为每一句提供地道的中文翻译。
+
+拆分规则： 遇到长难句时，请按照语意节奏拆分成更短的单元，方便朗读。
+
+返回格式： 必须是严格的 JSON 对象： { "sentences": [ { "en": "英文内容", "cn": "中文翻译" }, ... ] }`
+                },
+                {
+                    role: "user",
+                    content: text
+                }
+            ],
+            model: "deepseek-chat",
+            response_format: { type: "json_object" }
+        });
+
+        const result = JSON.parse(completion.choices[0].message.content);
+        res.json(result);
+
+    } catch (error) {
+        console.error('Error processing reading text:', error);
+        res.status(500).json({
+            error: 'Failed to process text',
+            details: error.message
+        });
+    }
+});
+
 // Start Server
 const PORT = 3000;
 app.listen(PORT, () => {
