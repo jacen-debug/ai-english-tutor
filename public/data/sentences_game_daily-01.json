@@ -1,0 +1,130 @@
+[
+  {
+    "id": 1,
+    "full_sentence": "Excuse me, where can I find the subway station?",
+    "cn": "打扰一下，请问我在哪能找到地铁站？",
+    "visible_part": "Excuse me, where can I",
+    "hidden_words": [
+      "find",
+      "the",
+      "subway",
+      "station"
+    ]
+  },
+  {
+    "id": 2,
+    "full_sentence": "I would like to order a cup of black coffee.",
+    "cn": "我想点一杯黑咖啡。",
+    "visible_part": "I would like to",
+    "hidden_words": [
+      "order",
+      "a",
+      "cup",
+      "of",
+      "black",
+      "coffee"
+    ]
+  },
+  {
+    "id": 3,
+    "full_sentence": "Could you please take a photo for us?",
+    "cn": "能麻烦你帮我们要张照吗？",
+    "visible_part": "Could you please",
+    "hidden_words": [
+      "take",
+      "a",
+      "photo",
+      "for",
+      "us"
+    ]
+  },
+  {
+    "id": 4,
+    "full_sentence": "How much does a ticket to the museum cost?",
+    "cn": "去博物馆的票多少钱？",
+    "visible_part": "How much does",
+    "hidden_words": [
+      "a",
+      "ticket",
+      "to",
+      "the",
+      "museum",
+      "cost"
+    ]
+  },
+  {
+    "id": 5,
+    "full_sentence": "Do you have any recommendations for local food?",
+    "cn": "你有什么当地美食推荐吗？",
+    "visible_part": "Do you have any",
+    "hidden_words": [
+      "recommendations",
+      "for",
+      "local",
+      "food"
+    ]
+  },
+  {
+    "id": 6,
+    "full_sentence": "What time do you usually get up in the morning?",
+    "cn": "你早上通常几点起床？",
+    "visible_part": "What time do you",
+    "hidden_words": [
+      "usually",
+      "get",
+      "up",
+      "in",
+      "the",
+      "morning"
+    ]
+  },
+  {
+    "id": 7,
+    "full_sentence": "It is nice to meet you finally.",
+    "cn": "终于见到你了，很高兴。",
+    "visible_part": "It is nice to",
+    "hidden_words": [
+      "meet",
+      "you",
+      "finally"
+    ]
+  },
+  {
+    "id": 8,
+    "full_sentence": "Can I pay by credit card?",
+    "cn": "我可以用信用卡支付吗？",
+    "visible_part": "Can I",
+    "hidden_words": [
+      "pay",
+      "by",
+      "credit",
+      "card"
+    ]
+  },
+  {
+    "id": 9,
+    "full_sentence": "I am looking for a pair of running shoes.",
+    "cn": "我正在找一双跑鞋。",
+    "visible_part": "I am looking for",
+    "hidden_words": [
+      "a",
+      "pair",
+      "of",
+      "running",
+      "shoes"
+    ]
+  },
+  {
+    "id": 10,
+    "full_sentence": "Please turn down the music a little bit.",
+    "cn": "请把音乐关小一点。",
+    "visible_part": "Please turn down",
+    "hidden_words": [
+      "the",
+      "music",
+      "a",
+      "little",
+      "bit"
+    ]
+  }
+]

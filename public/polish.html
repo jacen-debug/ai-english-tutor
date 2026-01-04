@@ -31,15 +31,18 @@
 <body class="bg-gradient-to-b from-blue-50/60 via-white to-white min-h-screen text-[#111111] overflow-x-hidden">
 
     <!-- Header (Static, Centered) -->
-    <header class="relative py-10 text-center px-6 max-w-6xl mx-auto">
+    <div class="absolute top-6 left-6 z-10">
         <a href="index.html"
-            class="absolute left-6 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 text-slate-500 hover:text-blue-600">
+            class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 text-slate-500 hover:text-blue-600">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
         </a>
+    </div>
+
+    <header class="relative py-10 text-center px-6 max-w-6xl mx-auto">
         <h1 class="text-4xl font-bold tracking-tight text-[#111111]">
             英语润色专家
         </h1>

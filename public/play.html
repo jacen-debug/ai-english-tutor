@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playing - Sentence Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .shake {
+            animation: shake 0.3s ease-in-out;
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+
+        .correct-glow {
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+            border-color: #22c55e !important;
+            background-color: #f0fdf4 !important;
+        }
+
+        .word-anim {
+            animation: fadeInScale 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Header -->
+    <div class="absolute top-6 left-6 flex items-center gap-4">
+        <a href="game.html"
+            class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-lg text-slate-500 hover:text-blue-600 hover:scale-105 transition-all"
+            title="Return to Menu">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+        </a>
+        <div class="bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm border border-white/50">
+            <span class="text-slate-500 font-medium text-sm">Level: <span id="levelIndicator"
+                    class="text-blue-600 font-bold">1/--</span></span>
+        </div>
+    </div>
+
+    <!-- Reset Button (Top Right) -->
+    <div class="absolute top-6 right-6">
+        <button onclick="resetProgress()" class="text-xs text-slate-400 hover:text-red-500 transition-colors underline">
+            Reset Progress
+        </button>
+    </div>
+
+    <!-- Main Game Container -->
+    <div class="w-full max-w-3xl bg-white rounded-[2rem] shadow-xl p-8 md:p-12 relative overflow-hidden transition-all duration-500"
+        id="gameCard">
+
+        <!-- Loading State -->
+        <div id="loadingState" class="absolute inset-0 bg-white z-20 flex flex-col items-center justify-center">
+            <div class="w-12 h-12 border-4 border-blue-100 border-t-blue-500 rounded-full animate-spin mb-4"></div>
+            <p class="text-slate-500 font-medium">Loading Course...</p>
+        </div>
+
+        <!-- Completion Overlay -->
+        <div id="completionOverlay"
+            class="absolute inset-0 bg-white/98 z-30 flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-500 text-center p-8">
+            <div
+                class="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mb-6 text-5xl animate-bounce">
+                🏆
+            </div>
+            <h2 class="text-4xl font-bold text-slate-800 mb-4">Course Completed!</h2>
+            <p class="text-slate-500 text-lg mb-8 max-w-md">You've mastered all the sentences in this deck.
+                Great job!</p>
+            <div class="flex gap-4">
+                <button onclick="resetProgress()"
+                    class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-6 py-3 rounded-full font-bold transition-all">
+                    Replay Course
+                </button>
+                <a href="game.html"
+                    class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                    Back to Menu
+                </a>
+            </div>
+        </div>
+
+        <!-- Success Overlay (Level Up) -->
+        <div id="successOverlay"
+            class="absolute inset-0 bg-white/95 z-20 flex flex-col items-center justify-center hidden opacity-0 transition-opacity duration-500">
+            <div
+                class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6 text-4xl animate-bounce">
+                🎉
+            </div>
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">Correct!</h2>
+            <p class="text-slate-500 mb-8">Moving to next level...</p>
+            <button id="nextLevelBtn" onclick="nextLevel()"
+                class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                Next Level ->
+            </button>
+        </div>
+
+        <!-- Question Area -->
+        <div class="mb-8 text-center">
+            <div class="flex items-center justify-center gap-3 mb-10">
+                <h3 id="cnText" class="text-xl md:text-2xl text-slate-500 font-medium leading-relaxed font-cn">
+                    <!-- Chinese translation -->
+                </h3>
+                <button onclick="playSentence()"
+                    class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-200 hover:scale-105 transition-all shadow-sm"
+                    title="Play Audio">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
+                </button>
+            </div>
+
+            <div id="sentenceContainer"
+                class="text-2xl md:text-4xl font-bold text-slate-800 leading-[3rem] flex flex-wrap justify-center items-end gap-x-3 gap-y-4">
+                <!-- Sentence parts and Inputs -->
+            </div>
+        </div>
+
+        <!-- 3-Strike Feedback -->
+        <div id="assistFeedback" class="text-center mb-4 min-h-[24px]">
+            <!-- Injected via JS -->
+        </div>
+
+        <!-- Action Button -->
+        <div class="mt-4 flex justify-center">
+            <button id="checkBtn" onclick="checkAnswer()"
+                class="bg-brand-600 bg-blue-600 hover:bg-brand-700 hover:bg-blue-700 text-white text-lg font-bold px-12 py-4 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all w-full md:w-auto min-w-[200px]">
+                Check Answer
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // State
+        let allLevels = [];
+        let currentLevelIndex = 0;
+        let currentLevelData = null;
+        let wrongAttempts = 0;
+        let deckId = 'daily_100'; // Default
+        let progressKey = '';
+
+        // Init
+        document.addEventListener('DOMContentLoaded', initGame);
+
+        async function initGame() {
+            const loader = document.getElementById('loadingState');
+
+            try {
+                // 1. Get Params
+                const params = new URLSearchParams(window.location.search);
+                const deckParam = params.get('deck');
+                if (deckParam) deckId = deckParam;
+
+                // Define Data Source
+                let dataUrl = '';
+                if (deckId === 'daily_100') {
+                    dataUrl = 'data/sentences_game_daily-01.json';
+                } else if (deckId === 'business_100') {
+                    // Placeholder for future
+                    // dataUrl = 'data/sentences_game_biz-01.json';
+                    console.warn('Unknown deck, falling back to daily');
+                    dataUrl = 'data/sentences_game_daily-01.json';
+                } else {
+                    dataUrl = 'data/sentences_game_daily-01.json'; // Fallback
+                }
+
+                // 2. Load Data
+                const res = await fetch(dataUrl);
+                if (!res.ok) throw new Error('Failed to load data');
+                allLevels = await res.json();
+
+                // 3. Load Progress
+                progressKey = `${deckId}_progress`;
+                const savedIndex = localStorage.getItem(progressKey);
+                if (savedIndex !== null) {
+                    currentLevelIndex = parseInt(savedIndex, 10);
+                }
+
+                if (currentLevelIndex >= allLevels.length) {
+                    currentLevelIndex = allLevels.length;
+                }
+
+                loadCurrentLevel();
+
+            } catch (err) {
+                console.error(err);
+                alert('Course load error. Please refresh.');
+            } finally {
+                loader.classList.add('hidden');
+            }
+        }
+
+        function loadCurrentLevel() {
+            if (currentLevelIndex >= allLevels.length) {
+                showCompletion();
+                return;
+            }
+
+            document.getElementById('levelIndicator').innerText = `${currentLevelIndex + 1}/${allLevels.length}`;
+            currentLevelData = allLevels[currentLevelIndex];
+
+            // Reset Overlay & State
+            document.getElementById('successOverlay').classList.add('hidden', 'opacity-0');
+            document.getElementById('assistFeedback').innerText = '';
+            document.getElementById('checkBtn').style.display = 'block';
+            document.getElementById('checkBtn').innerText = 'Check Answer';
+            wrongAttempts = 0;
+
+            renderLevel(currentLevelData);
+        }
+
+        function renderLevel(data) {
+            document.getElementById('cnText').innerText = data.cn;
+
+            const container = document.getElementById('sentenceContainer');
+
+            // Layout: Visible Part + Inputs
+            let html = `<span class="mr-1">${data.visible_part}</span>`;
+
+            // Create inputs for each hidden word
+            data.hidden_words.forEach((word, index) => {
+                // Adaptive width
+                const widthStyle = `width: ${Math.max(word.length * 1.2, 3)}em`;
+
+                html += `
+                    <input type="text" 
+                        id="input-${index}"
+                        autocomplete="off"
+                        class="word-input border-b-4 border-slate-200 bg-slate-50 text-center text-blue-600 focus:border-blue-500 focus:bg-white focus:outline-none transition-all rounded-lg mx-1 px-2 pb-1"
+                        style="${widthStyle}"
+                        placeholder="" 
+                        oninput="this.classList.remove('border-red-400', 'bg-red-50', 'text-red-500')"
+                        onkeydown="handleInputKey(event, ${index})"
+                    />
+                `;
+            });
+
+            container.innerHTML = html;
+
+            // Focus first input
+            setTimeout(() => {
+                const firstInput = document.getElementById('input-0');
+                if (firstInput) firstInput.focus();
+            }, 100);
+        }
+
+        function handleInputKey(e, index) {
+            // Support Enter or Space to jump to next
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault(); // Prevent space typed
+
+                const nextInput = document.getElementById(`input-${index + 1}`);
+                if (nextInput) {
+                    nextInput.focus();
+                } else {
+                    if (e.key === 'Enter') checkAnswer();
+                }
+            }
+        }
+
+        function playSentence() {
+            if (!currentLevelData) return;
+
+            // Cancel previous
+            window.speechSynthesis.cancel();
+
+            const utter = new SpeechSynthesisUtterance(currentLevelData.full_sentence);
+            utter.lang = 'en-US';
+            utter.rate = 0.9; // Slightly slower for clarity
+
+            // Try to pick a good voice
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoice = voices.find(v => v.name.includes('Google US English')) || voices.find(v => v.lang === 'en-US');
+            if (preferredVoice) utter.voice = preferredVoice;
+
+            window.speechSynthesis.speak(utter);
+        }
+
+        function checkAnswer() {
+            const inputs = document.querySelectorAll('.word-input');
+            let allCorrect = true;
+
+            inputs.forEach((input, index) => {
+                const userVal = input.value.trim().toLowerCase();
+                const targetVal = currentLevelData.hidden_words[index].toLowerCase();
+
+                // Remove weird chars
+                const cleanUser = userVal.replace(/[^\w']/g, "");
+                const cleanTarget = targetVal.replace(/[^\w']/g, "");
+
+                if (cleanUser === cleanTarget) {
+                    // Correct styling
+                    input.classList.add('border-green-500', 'bg-green-50', 'text-green-600');
+                    input.classList.remove('border-slate-200', 'bg-slate-50', 'text-blue-600', 'border-red-400', 'bg-red-50', 'text-red-500');
+                    input.disabled = true; // Lock correct answers
+                } else {
+                    // Incorrect styling
+                    input.classList.add('border-red-400', 'bg-red-50', 'text-red-500', 'shake');
+                    input.classList.remove('border-slate-200', 'bg-slate-50', 'text-blue-600');
+                    allCorrect = false;
+
+                    setTimeout(() => input.classList.remove('shake'), 500);
+                }
+            });
+
+            if (allCorrect) {
+                handleSuccess();
+            } else {
+                handleFailure();
+            }
+        }
+
+        function handleSuccess() {
+            playSuccessSound();
+            setTimeout(() => {
+                document.getElementById('successOverlay').classList.remove('hidden');
+                void document.getElementById('successOverlay').offsetWidth;
+                document.getElementById('successOverlay').classList.remove('opacity-0');
+                document.getElementById('nextLevelBtn').focus();
+            }, 400);
+        }
+
+        function handleFailure() {
+            wrongAttempts++;
+            playErrorSound();
+
+            if (wrongAttempts >= 3) {
+                // Auto Reveal
+                const inputs = document.querySelectorAll('.word-input');
+                inputs.forEach((input, index) => {
+                    input.value = currentLevelData.hidden_words[index];
+                    input.classList.add('border-green-500', 'bg-green-50', 'text-green-600');
+                    input.classList.remove('border-slate-200', 'border-red-400', 'bg-red-50', 'text-red-500', 'shake');
+                    input.disabled = true;
+                });
+
+                const feedback = document.getElementById('assistFeedback');
+                feedback.innerHTML = '<span class="text-orange-500 font-bold animate-pulse">(已为你显示正确答案)</span>';
+
+                // Change Button to Continue
+                const btn = document.getElementById('checkBtn');
+                btn.innerText = 'Continue ->';
+                btn.onclick = () => {
+                    handleSuccess();
+                };
+
+            } else {
+                // Nothing special, just let shake animation play out
+            }
+        }
+
+        function nextLevel() {
+            currentLevelIndex++;
+            localStorage.setItem(progressKey, currentLevelIndex);
+            loadCurrentLevel();
+        }
+
+        function showCompletion() {
+            document.getElementById('completionOverlay').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('completionOverlay').classList.remove('opacity-0');
+            }, 50);
+        }
+
+        function resetProgress() {
+            if (confirm("这会重置当前进度到第一关，确定吗？")) {
+                currentLevelIndex = 0;
+                localStorage.setItem(progressKey, 0);
+                location.reload();
+            }
+        }
+
+        // --- Audio Context ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSuccessSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        function playErrorSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.value = 150;
+            osc.type = 'sawtooth';
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.2);
+        }
+    </script>
+</body>
+
+</html>
