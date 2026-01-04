@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Smart Reader</title>
+    <title>智能文本领读 - English AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Document Parsers -->
@@ -32,12 +32,9 @@
             }
         }
     </script>
+    <link rel="stylesheet" href="css/global.css">
     <style>
-        body {
-            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
-            min-height: 100vh;
-        }
-
+        /* Body background handled by class in body tag now */
         .glass-panel {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(12px);
@@ -55,7 +52,7 @@
     </style>
 </head>
 
-<body class="text-slate-800 font-sans antialiased pb-32">
+<body class="bg-gradient-to-br from-slate-50 to-blue-50/50 min-h-screen text-[#111111] pb-32">
 
     <!-- Back Button -->
     <div class="absolute top-6 left-6 z-10">
@@ -70,22 +67,34 @@
     </div>
 
     <!-- Header / Input Area -->
-    <div class="container mx-auto px-4 pt-8 max-w-3xl">
+    <header class="relative py-12 text-center px-4 max-w-3xl mx-auto">
+        <h1
+            class="text-4xl md:text-5xl font-bold tracking-tight text-[#111111] mb-2 flex items-center justify-center gap-3">
+            <i class="fa-solid fa-book-open text-brand-500 text-3xl md:text-4xl"></i>
+            智能文本领读
+        </h1>
+        <p class="text-slate-500 text-lg">AI 智能分析，助你掌握地道发音</p>
+    </header>
+
+    <div class="container mx-auto px-4 max-w-3xl">
 
         <div
             class="bg-white rounded-3xl shadow-soft p-6 mb-8 relative group transition-all duration-300 hover:shadow-lg">
-            <h1 class="text-2xl font-bold text-slate-800 mb-4 flex items-center">
-                <i class="fa-solid fa-book-open text-brand-500 mr-3"></i>
-                AI Smart Reader
-            </h1>
 
             <div class="relative">
                 <textarea id="inputText"
                     class="w-full h-40 p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand-200 resize-none text-lg text-slate-700 placeholder-slate-400 transition-all"
                     placeholder="在此粘贴英文内容，或点击右下角上传文档..."></textarea>
 
-                <!-- File Upload Trigger -->
+                <!-- File Upload & Clear Trigger -->
                 <div class="absolute bottom-4 right-4 flex gap-2">
+                    <button onclick="clearText()"
+                        class="bg-white hover:bg-red-50 text-slate-400 hover:text-red-500 px-4 py-2 rounded-xl shadow-sm border border-slate-100 text-sm font-medium transition-colors flex items-center gap-2"
+                        title="清空文本">
+                        <i class="fa-solid fa-trash-can"></i>
+                        清空
+                    </button>
+
                     <input type="file" id="fileInput" class="hidden" accept=".txt,.docx,.pdf">
                     <button onclick="document.getElementById('fileInput').click()"
                         class="bg-white hover:bg-slate-50 text-slate-600 px-4 py-2 rounded-xl shadow-sm border border-slate-100 text-sm font-medium transition-colors flex items-center gap-2">
@@ -204,6 +213,12 @@
                 textArea.value = "";
             }
         });
+
+        function clearText() {
+            const textArea = document.getElementById('inputText');
+            textArea.value = "";
+            textArea.focus();
+        }
 
         // --- API & Rendering Logic ---
         async function processText() {
